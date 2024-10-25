@@ -1,0 +1,41 @@
+### Alphabet:
+
+1. Upper and lower case letters of the English alphabet (A-Z, a-z).
+2. Underline character '_'.
+3. Decimal digits (0-9).
+
+### Lexic:
+
+a. Special symbols:
+   - Operators: +, -, *, /, :=, <, <=, =, >=, %, ()
+   - Separators: [, ], {, }, :, ;, space, (, )
+   - Reserved words:
+     int, float, bool, if, else, for, while, return, true, false, print, list
+
+b. Identifiers:
+   - Sequence of letters and digits, starting with a letter.
+   - Rule: `identifier ::= letter { letter | digit | _ }`
+   - Example: `variable1`, `my_var_2`
+
+c. Constants:
+   1. Integer:
+      - Rule: `integer ::= [ "+" | "-" ] digit { digit }`
+      - Example: `123`, `-10`, `+42`
+
+   2. Floating-point:
+      - Rule: `float ::= [ "+" | "-" ] digit { digit } "." digit { digit }`
+      - Example: `3.14`, `-0.001`, `+2.71`
+
+   3. Boolean:
+      - Rule: `bool ::= "true" | "false"`
+
+   4. Character:
+      - Rule: `character ::= "'" (letter | digit) "'"`
+      - Example: `'a'`, `'3'`
+
+   5. String:
+      - Rule: `string ::= '"' char { char } '"'`
+      - Example: `"hello"`, `"123abc"`
+
+### Errors:
+- Invalid identifiers, characters, and operators must be captured.

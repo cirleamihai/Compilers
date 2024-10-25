@@ -1,0 +1,32 @@
+#BEGIN
+
+int a = 10;
+int b = 20;
+int c = 30;
+
+int maxNr = max(a, max(b, c));
+
+bool isPrime(nr) {
+    if (nr < 2) {
+        return false;
+    }
+    for (int i = 2; i <= nr / 2; i++) {
+        if (nr % i == 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool gcd(a, b) {
+    while (a != b) {
+        if (a > b) {
+            a = a - b;
+        } else {
+            b = b - a;
+        }
+    }
+    return a;
+}
+
+#END

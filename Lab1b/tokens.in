@@ -1,0 +1,51 @@
+### Tokens List:
+1. Keywords: [[
+   --- int
+   --- float
+   --- bool
+   --- if
+   --- else
+   --- for
+   --- while
+   --- return
+   --- true
+   --- false
+   --- print
+   --- list
+]]
+
+2. Operators: [[
+   --- +
+   --- -
+   --- *
+   --- /
+   --- ==
+   --- =
+   --- <
+   --- >
+   --- <=
+   --- >=
+   --- %
+   --- ()
+   --- !
+]]
+
+3. Delimiters: [[
+   --- (
+   --- )
+   --- [
+   --- ]
+   --- {
+   --- }
+   --- ;
+   --- ,
+]]
+
+4. Identifiers:
+   - User-defined variable names (must start with a letter, up to 256 characters).
+
+5. Constants:
+   - Integers: `+`, `-`, digits.
+   - Floating points: decimals.
+   - Boolean: `true`, `false`.
+   - String constants: `"text"`.

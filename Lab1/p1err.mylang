@@ -1,0 +1,8 @@
+#BEGIN
+
+int a, b = 10c;    // <- Error: Unknown token 10c
+int c = 20;
+
+int sum = b +$ c; // <- Error: Unknown token +$
+
+#END

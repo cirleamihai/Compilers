@@ -1,0 +1,129 @@
+# lexic.txt
+### Alphabet:
+
+1. Upper and lower case letters of the English alphabet (A-Z, a-z).
+2. Underline character '_'.
+3. Decimal digits (0-9).
+
+### Lexic:
+
+a. Special symbols:
+   - Operators: +, -, *, /, :=, <, <=, =, >=, %, ()
+   - Separators: [, ], {, }, :, ;, space, (, )
+   - Reserved words:
+     int, float, bool, if, else, for, while, return, true, false, print, list
+
+b. Identifiers:
+   - Sequence of letters and digits, starting with a letter.
+   - Rule: `identifier ::= letter { letter | digit | _ }`
+   - Example: `variable1`, `my_var_2`
+
+c. Constants:
+   1. Integer:
+      - Rule: `integer ::= [ "+" | "-" ] digit { digit }`
+      - Example: `123`, `-10`, `+42`
+
+   2. Floating-point:
+      - Rule: `float ::= [ "+" | "-" ] digit { digit } "." digit { digit }`
+      - Example: `3.14`, `-0.001`, `+2.71`
+
+   3. Boolean:
+      - Rule: `bool ::= "true" | "false"`
+
+   4. Character:
+      - Rule: `character ::= "'" (letter | digit) "'"`
+      - Example: `'a'`, `'3'`
+
+   5. String:
+      - Rule: `string ::= '"' char { char } '"'`
+      - Example: `"hello"`, `"123abc"`
+
+### Errors:
+- Invalid identifiers, characters, and operators must be captured.
+
+# tokens.in
+### Tokens List:
+1. Keywords:
+   - int
+   - float
+   - bool
+   - if
+   - else
+   - for
+   - while
+   - return
+   - true
+   - false
+   - print
+   - list
+
+2. Operators:
+   - +
+   - -
+   - *
+   - /
+   - :=
+   - <
+   - <=
+   - =
+   - >=
+   - %
+   - ()
+
+3. Delimiters:
+   - (
+   - )
+   - [
+   - ]
+   - {
+   - }
+   - ;
+   - ,
+
+4. Identifiers:
+   - User-defined variable names (must start with a letter, up to 256 characters).
+
+5. Constants:
+   - Integers: `+`, `-`, digits.
+   - Floating points: decimals.
+   - Boolean: `true`, `false`.
+   - String constants: `"text"`.
+
+# syntax.in
+### Syntax Rules:
+
+1. Program structure:
+   program ::= statement_list
+
+2. Statements:
+   statement_list ::= statement {";"} | statement {";"} statement_list
+   statement ::= assign_statement | io_statement | control_statement | loop_statement | function_statement
+
+3. Assignment:
+   assign_statement ::= identifier ":=" expression
+
+4. Expressions:
+   expression ::= term | expression "+" term | expression "-" term
+   term ::= factor | term "*" factor | term "/" factor
+   factor ::= identifier | constant | "(" expression ")"
+
+5. Input/Output:
+   io_statement ::= "print" "(" argument_list ")"
+   argument_list ::= identifier | string | identifier "," argument_list
+
+6. Control Statements:
+   control_statement ::= "if" "(" condition ")" "{" statement_list "}" [ "else" "{" statement_list "}" ]
+
+7. Loop Statements:
+   loop_statement ::= "for" "(" identifier "in" list ")" "{" statement_list "}"
+   list ::= "[" element_list "]"
+   element_list ::= constant | constant "," element_list
+
+8. Conditions:
+   condition ::= expression relational_operator expression
+   relational_operator ::= "<" | "<=" | "=" | ">" | ">=" | "!="
+
+9. Function Statements:
+    function_statement ::= type identifier "(" parameter_list ")" "{" statement_list "}"
+    type ::= "int" | "float" | "bool" | "void" | "list"
+    parameter_list ::= identifier | identifier "," parameter_list

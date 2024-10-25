@@ -1,0 +1,33 @@
+#BEGIN
+
+int a = 1;
+int b = -3;
+int c = 2;
+
+// a * x ^ 2 + b * x + c = 0
+// x^2 - 3x + 2 = 0
+
+float delta = b * b - 4 * a * c;
+
+if (delta > 0) {
+    // Two real and distinct roots
+    float root1 = (-b + sqrt(delta)) / (2 * a);
+    float root2 = (-b - sqrt(delta)) / (2 * a);
+
+    print("Root 1: ", root1);
+    print("Root 2: ", root2);
+} else if (delta == 0) {
+    // One real and repeated root
+    float root = -b / (2 * a);
+
+    print("Repeated Root: ", root);
+} else {
+    // Complex roots
+    float real_part = -b / (2 * a);
+    float imag_part = sqrt(-delta) / (2 * a);
+
+    print("Complex Root 1: ", real_part, " + i", imag_part);
+    print("Complex Root 2: ", real_part, " - i", imag_part);
+}
+
+#END

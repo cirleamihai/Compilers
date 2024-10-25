@@ -1,0 +1,93 @@
+#BEGIN p1.mylang
+
+int a = 10;
+int b = 20;
+int c = 30;
+
+int maxNr = max(a, max(b, c));
+
+bool isPrime(nr) {
+    if (nr < 2) {
+        return false;
+    }
+    for (int i = 2; i <= nr / 2; i++) {
+        if (nr % i == 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool gcd(a, b) {
+    while (a != b) {
+        if (a > b) {
+            a = a - b;
+        } else {
+            b = b - a;
+        }
+    }
+    return a;
+}
+
+#END
+#BEGIN p2.mylang
+
+int a = 1;
+int b = -3;
+int c = 2;
+
+// a * x ^ 2 + b * x + c = 0
+// x^2 - 3x + 2 = 0
+
+float delta = b * b - 4 * a * c;
+
+if (delta > 0) {
+    // Two real and distinct roots
+    float root1 = (-b + sqrt(delta)) / (2 * a);
+    float root2 = (-b - sqrt(delta)) / (2 * a);
+
+    print("Root 1: ", root1);
+    print("Root 2: ", root2);
+} else if (delta == 0) {
+    // One real and repeated root
+    float root = -b / (2 * a);
+
+    print("Repeated Root: ", root);
+} else {
+    // Complex roots
+    float real_part = -b / (2 * a);
+    float imag_part = sqrt(-delta) / (2 * a);
+
+    print("Complex Root 1: ", real_part, " + i", imag_part);
+    print("Complex Root 2: ", real_part, " - i", imag_part);
+}
+
+#END
+#BEGIN p3.mylang
+
+list numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+int sum = 0;
+int min_number=MAXINT, max_number=MININT;
+
+for (number in numbers) {
+    sum = sum + number;
+    if (number < min_number) {
+        min_number = number;
+    }
+    if (number > max_number) {
+        max_number = number;
+    }
+}
+
+print("Sum of numbers: ", sum);
+
+#END
+#BEGIN p1err.mylang
+
+int a, b = 10c;    // <- Error: Unknown token 10c
+int c = 20;
+
+int sum = b +$ c; // <- Error: Unknown token +$
+
+#END
+
