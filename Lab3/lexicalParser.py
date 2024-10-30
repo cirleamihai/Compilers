@@ -4,6 +4,16 @@ from Lab3.tokensFile import *
 from Lab3.lexicalErrors import *
 
 
+def _looks_like_string(token):
+    return token == '"' or token == "'" or (
+                (token.startswith('"') or token.startswith("'"))
+                and not (token.endswith('"') or token.endswith("'")))
+
+
+def _is_string(token):
+    return (token.startswith('"') and token.endswith('"')) or (token.startswith("'") and token.endswith("'"))
+
+
 class LexicalParser:
     def __init__(self, tokens: TokensFile, filename: str, folder: str):
         self.tokens = tokens
@@ -27,8 +37,16 @@ class LexicalParser:
         while i < len(code):
             char = code[i]
 
+            if self.line_count == 23:
+                if buffer == '" ':
+                    pass
+
+            if _looks_like_string(buffer):
+                buffer += char
+                i += 1
+
             # Check for newline
-            if char == '\n':
+            elif char == '\n':
                 self.line_count += 1  # Increment line count
                 i += 1
                 continue
@@ -86,7 +104,7 @@ class LexicalParser:
             return -1, "CONSTANT", float(token)
 
         # Check for string constants (single or double quotes)
-        elif (token.startswith('"') and token.endswith('"')) or (token.startswith("'") and token.endswith("'")):
+        elif _is_string(token):
             return -1, "CONSTANT", token.strip('"').strip("'")  # Strip quotes from the string value
 
         # Check for valid identifier

@@ -49,7 +49,7 @@ class ProgramInternalForm:
 
 def run_pif():
     tokens_file = TokensFile()
-    lexical_parser = LexicalParser(tokens_file, "p1.mylang", "Lab1")
+    lexical_parser = LexicalParser(tokens_file, "p3.mylang", "Lab1")
     pif = ProgramInternalForm(lexical_parser)
     pif.parse()
     print(pif)
