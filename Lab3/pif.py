@@ -32,12 +32,12 @@ class ProgramInternalForm:
 
     def add_tokens_in_pif(self, tokens):
         for token in tokens:
-            if token[0] == "CONSTANT":
-                pos = self.constants_syt.add(token[1])
-                self.pif.append((token[0], pos))
-            elif token[0] == "IDENTIFIER":
-                pos = self.identifiers_syt.add(token[1])
-                self.pif.append((token[0], pos))
+            if token[1] == "CONSTANT":
+                pos = self.constants_syt.add(token[2])
+                self.pif.append((token[0], token[1], pos))
+            elif token[1] == "IDENTIFIER":
+                pos = self.identifiers_syt.add(token[2])
+                self.pif.append((token[0], token[1], pos))
             else:
                 self.pif.append(token)
 

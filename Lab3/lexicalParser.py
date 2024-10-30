@@ -6,9 +6,7 @@ from Lab3.lexicalErrors import *
 
 class LexicalParser:
     def __init__(self, tokens: TokensFile, filename: str, folder: str):
-        self.keywords = tokens.keywords
-        self.operators = tokens.operators
-        self.delimiters = tokens.delimiters
+        self.tokens = tokens
         self._startup_marker = tokens.startup_marker
         self._end_marker = tokens.end_marker
         self.identifier_pattern = re.compile(r'^[a-zA-Z][a-zA-Z0-9_]*$')  # identifier ::= letter { letter | digit | _ }
@@ -42,20 +40,21 @@ class LexicalParser:
                 continue
 
             # Check for delimiters
-            elif char in self.delimiters:
+            elif char in self.tokens.delimiters:
                 buffer = self.add_from_buffer(buffer, tokens)
-                tokens.append(("DELIMITER", char))
+                tokens.append((self.tokens.delimiters_identifier[char], "DELIMITER", char))
                 i += 1
 
             # Check for operators
-            elif char in self.operators:
+            elif char in self.tokens.operators:
                 buffer = self.add_from_buffer(buffer, tokens)
                 # Check for multi-character operators
-                if i + 1 < len(code) and (char + code[i + 1]) in self.operators:
-                    tokens.append(("OPERATOR", char + code[i + 1]))
+                composed_operator = char + code[i + 1] if i + 1 < len(code) else None
+                if i + 1 < len(code) and composed_operator in self.tokens.operators:
+                    tokens.append((self.tokens.operators_identifier[composed_operator], "OPERATOR", composed_operator))
                     i += 2
                 else:
-                    tokens.append(("OPERATOR", char))
+                    tokens.append((self.tokens.operators_identifier[char], "OPERATOR", char))
                     i += 1
 
             # Accumulate characters for identifiers or constants
@@ -75,27 +74,25 @@ class LexicalParser:
 
     def classify_token(self, token):
         # Check for keywords
-        if token in self.keywords:
-            return "KEYWORD", token
+        if token in self.tokens.keywords:
+            return self.tokens.keywords_identifier[token], "KEYWORD", token
 
         # Check for integer constants
         elif token.isdigit():
-            return "CONSTANT", int(token)
+            return -1, "CONSTANT", int(token)
 
         # Check for floating-point constants
         elif token.replace('.', '', 1).isdigit() and token.count('.') == 1:
-            return "CONSTANT", float(token)
+            return -1, "CONSTANT", float(token)
 
         # Check for string constants (single or double quotes)
         elif (token.startswith('"') and token.endswith('"')) or (token.startswith("'") and token.endswith("'")):
-            return "CONSTANT", token.strip('"').strip("'")  # Strip quotes from the string value
+            return -1, "CONSTANT", token.strip('"').strip("'")  # Strip quotes from the string value
 
         # Check for valid identifier
         elif self.identifier_pattern.match(token):
-            return "IDENTIFIER", token
+            return -2, "IDENTIFIER", token
 
         # If none of the above, return an error for invalid identifier
         else:
             raise LexicalParsingError(file=self.filename, line=self.line_count, token=token)
-
-
