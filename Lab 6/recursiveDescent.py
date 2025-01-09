@@ -7,6 +7,8 @@ class RecursiveDescentParser:
         self.position = 0
         self.success = False
         self.history = []  # Stack to keep track of backtracking
+        self.parsing_tree = []  # Tree node to keep track of the parse tree
+        self.node_index = 1
 
     def parse(self, starting_non_terminal):
         self.success = False
@@ -22,21 +24,26 @@ class RecursiveDescentParser:
         else:
             return False
 
-    def _expand(self, non_terminal):
+    def _expand(self, non_terminal, parent=None, parent_index=-1):
         rules = self.grammar[non_terminal]  # Get the production rule for the non-terminal
 
         for rule in rules:
             print("Expanding", non_terminal, "with", rule)
             self.history.append(("expand", non_terminal, self.position, rule))
+            node_index = self._add_tree_node(non_terminal, parent=parent, parent_index=parent_index)
 
             # Checking the rule
-            self._try_rule(rule)
+            self._try_rule(rule, non_terminal, non_terminal_index=node_index)
             if self.success:
                 return
 
-    def _advance(self, symbol):
+            # If the rule is not successful, remove the tree node
+            self._remove_tree_nodes(node_index)
+
+    def _advance(self, symbol, parent, parent_index):
         if self.position < self.input_string.__len__() and self.input_string[self.position] == symbol:
             self.position += 1
+            self._add_tree_node(symbol=symbol, parent=parent, parent_index=parent_index)
             print(f"Advanced to {self.position} with {symbol}")
             return True
 
@@ -44,6 +51,7 @@ class RecursiveDescentParser:
 
     def _momentary_insuccess(self):
         print("Momentary Insuccess...")
+        self.success = False
         return self._back()
 
     def _back(self):
@@ -53,15 +61,15 @@ class RecursiveDescentParser:
         print(f"Non terminal {non_terminal} failed to {action} with rule {rule}. Position: {position}")
         return False
 
-    def _try_rule(self, rule):
+    def _try_rule(self, rule, non_terminal, non_terminal_index=-1):
         for symbol in rule:
             if symbol.isupper():
-                self._expand(symbol)
+                self._expand(symbol, parent=non_terminal, parent_index=non_terminal_index)
                 if not self.success:
                     return self._momentary_insuccess()
 
             else:
-                if not self._advance(symbol):
+                if not self._advance(symbol, parent=non_terminal, parent_index=non_terminal_index):
                     return self._momentary_insuccess()
 
         self._success()
@@ -69,6 +77,33 @@ class RecursiveDescentParser:
     def _success(self):
         print("This rule is successful!")
         self.success = True
+
+    def _add_tree_node(self, symbol, parent, parent_index=-1):
+        self.parsing_tree.append({
+            "Node": symbol,
+            "Parent": parent,
+            "Parent Index": parent_index,
+            "Index": self.node_index,
+            "Sibling To Index": self._get_sibling(parent, parent_index),
+        })
+
+        self.node_index += 1
+        return self.node_index - 1
+
+    def _get_sibling(self, parent, parent_index):
+        siblings = [node for node in self.parsing_tree if node["Parent"] == parent and node["Parent Index"] == parent_index]
+        return siblings[-1]["Index"] if siblings else -1
+
+    def _remove_tree_nodes(self, first_bad_node_index):
+        self.parsing_tree = [node for node in self.parsing_tree if node["Index"] < first_bad_node_index]
+        self.node_index = first_bad_node_index
+
+    def display_parsing_tree(self):
+        import pandas as pd
+        df = pd.DataFrame(self.parsing_tree)
+        df = df.drop(columns=["Parent Index"])
+        print("\nTree Format:")
+        print(df.to_string(index=False))
 
 def check_starting_terminals(grammar: dict, input_str: str) -> list:
     starting_non_terminals = []
@@ -93,6 +128,7 @@ def main():
         parser = RecursiveDescentParser(grammar, input_string)
         if parser.parse(starting_non_terminal):
             print("Input string is accepted!")
+            parser.display_parsing_tree()
             matches = True
             break
 
