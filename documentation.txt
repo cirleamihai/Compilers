@@ -1,0 +1,86 @@
+# Usage Documentation for Lexical and Syntax Analysis Script
+
+## 1. Overview
+
+# This script performs lexical and syntax analysis on an input file. It identifies tokens, validates syntax, and categorizes
+# elements based on predefined rules, including keywords, operators, separators, identifiers, and constants.
+# Files required for the analysis include:
+#   - tokens.in : contains the list of tokens for recognition.
+#   - syntax.in : defines syntax rules.
+#   - lexic.txt : provides lexical rules for valid symbols and identifiers.
+#   - for_pdf.txt : detailed definitions and additional rules for the lexical analyzer.
+
+## 2. How to Run the Script
+
+# Load and execute each Python script in the following order for the correct workflow:
+#   0. pif.py                # Handles Program Internal Form (PIF), storing token IDs and additional details.
+#   1. lexicalParser.py      # Main entry point for the lexical analysis.
+#   2. lexicalErrors.py      # Handles invalid tokens detected during lexical analysis.
+#   3. hashTable.py          # Stores and manages identifiers and other elements in a hash table.
+#   4. tokensFile.py         # Generates a file with recognized tokens.
+
+# Sample execution sequence:
+# $ python pif.py
+
+
+## 3. Functional Components
+
+# ### Lexical Analysis (lexicalParser.py)
+# This component performs lexical analysis on the input file and generates tokens based on defined rules in lexic.txt.
+# Tokens are classified into identifiers, constants, operators, and delimiters. Errors for unrecognized tokens are logged.
+#
+# **Key Functions:**
+# - `parseTokens()` : Reads source code and extracts tokens using rules from lexic.txt.
+# - `validateToken(token)` : Checks if the token matches any predefined format (identifier, constant, keyword).
+# - `writeTokens()` : Writes valid tokens to tokensFile.py for later reference.
+# - `reportError()` : Logs unrecognized tokens in lexicalErrors.py.
+
+# ### Syntax Analysis (syntax.in)
+# Syntax rules defined in syntax.in guide the parsing and arrangement of tokens to form valid expressions and statements.
+# The parser checks if token sequences comply with syntax rules, including assignment statements, control structures, and loops.
+#
+# **Key Rules:**
+# - Assignments: `assign_statement ::= identifier ":=" expression`
+# - Expressions: `expression ::= term | expression "+" term | expression "-" term`
+# - Control: `control_statement ::= "if" "(" condition ")" "{" statement_list "}" [ "else" "{" statement_list "}" ]`
+# - Loops: `loop_statement ::= "for" "(" identifier "in" list ")" "{" statement_list "}"`
+
+# ### Program Internal Form (PIF) (pif.py)
+# The PIF maintains a structured representation of recognized tokens, aiding in efficient lookup and validation.
+#
+# **Key Functions:**
+# - `addToken(token, tokenType)` : Adds a token and its type to the internal form.
+# - `getToken(token)` : Retrieves token details if it exists in the PIF.
+
+# ### Hash Table (hashTable.py)
+# This module optimizes storage and retrieval of identifiers, constants, and other elements.
+#
+# **Key Functions:**
+# - `insert(symbol)` : Adds a symbol to the hash table if not already present.
+# - `lookup(symbol)` : Returns the location of a symbol or indicates if it’s undefined.
+
+## 4. Error Handling
+
+# - Lexical errors (e.g., invalid identifiers) are handled in lexicalErrors.py.
+# - Syntax errors (e.g., missing delimiters) are managed by the parser in lexicalParser.py, which follows syntax rules in syntax.in.
+
+## 5. Input and Output Files
+
+# - **Input:** Source code to be analyzed should be provided as an argument to lexicalParser.py.
+# - **Output:**
+#   - **tokensFile.py** : Contains recognized tokens and their categories.
+#   - **lexicalErrors.py** : Stores information about any lexical errors encountered.
+#   - **pif.py** : The Program Internal Form with organized token data for easy reference.
+
+# Example:
+# Given the input `x = 5 + y;`, the output files would show tokens for `x`, `=`, `5`, `+`, and `y` with corresponding types.
+# Errors will be listed if any tokens do not match defined patterns in lexic.txt.
+
+## 6. Example Workflow
+
+# 1. Place the source code file in the same directory as the scripts.
+# 2. Execute `python lexicalParser.py <source_code_file>`.
+# 3. Check the output in:
+#      - tokensFile.py : For token classification results.
+#      - lexicalErrors.py : For any lexical errors.
+#      - pif.py : For the PIF representation.

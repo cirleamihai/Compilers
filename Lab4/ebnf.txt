@@ -1,0 +1,19 @@
+dfa = "{",
+        "states" ":" "[" state {"," state} "]", ",",
+        "alphabet" ":" "[" symbol {"," symbol} "]", ",",
+        "transition_function" ":" "{",
+            state_transitions {"," state_transitions},
+        "}", ",",
+        "start_state" ":" state, ",",
+        "accept_states" ":" "[" state {"," state} "]",
+      "}";
+
+state = "\"" identifier "\"";
+symbol = "\"" identifier "\"";
+
+state_transitions = state ":" "{" input_transition {"," input_transition} "}";
+input_transition = "\"" symbol "\"" ":" state;
+
+identifier = letter, { letter | digit | "_" };
+letter = "a" | ... | "z" | "A" | ... | "Z";
+digit = "0" | ... | "9";
