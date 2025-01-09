@@ -34,5 +34,3 @@ def load_grammar(filename):
             grammar[non_terminal] = productions
 
         return grammar
-
-print(load_grammar('rules.in'))
