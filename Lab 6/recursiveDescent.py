@@ -62,6 +62,12 @@ class RecursiveDescentParser:
         return False
 
     def _try_rule(self, rule, non_terminal, non_terminal_index=-1):
+        # Handle epsilon (empty) rules
+        if rule == ["e"]:
+            print(f"Epsilon detected in rule for {non_terminal}.")
+            self._success()  # Epsilon means immediate success
+            return True
+
         for symbol in rule:
             if symbol.isupper():
                 self._expand(symbol, parent=non_terminal, parent_index=non_terminal_index)
@@ -75,7 +81,7 @@ class RecursiveDescentParser:
         self._success()
 
     def _success(self):
-        print("This rule is successful!")
+        print("Patterns match so far!")
         self.success = True
 
     def _add_tree_node(self, symbol, parent, parent_index=-1):
@@ -118,7 +124,7 @@ def check_starting_terminals(grammar: dict, input_str: str) -> list:
 
 def main():
     grammar = load_grammar('rules.in')
-    input_string = "aabcbaa"
+    input_string = "aa"
     matches = False
 
     starting_non_terminals = check_starting_terminals(grammar, input_string)
