@@ -1,0 +1,35 @@
+Program -> StatementList
+StatementList -> Statement ; StatementList
+Statement -> AssignStatement | IOStatement | ControlStatement | LoopStatement | DeclarationStatement
+AssignStatement -> Identifier = Expression
+DeclarationStatement -> Type Identifier | Type AssignStatement
+Expression -> List | Term | Term + Expression | Term - Expression
+Term -> Factor | Factor * Term | Factor / Term
+Factor -> Identifier | Constant | ( Expression )
+IOStatement -> print ( ArgumentList )
+ArgumentList -> Identifier | String | Identifier , ArgumentList
+ControlStatement -> if ( Condition ) { StatementList } else { StatementList } | if ( Condition ) { StatementList }
+LoopStatement -> for ( Identifier in List ) { StatementList }
+List -> [ ElementList ]
+ElementList -> Constant , ElementList | Constant
+Condition -> Expression Operator Expression
+Operator -> < | <= | = | > | >= | !=
+FunctionStatement -> Type Identifier ( ParameterList ) { StatementList }
+Type -> int | float | bool | void | list | char | string
+ParameterList -> Identifier , ParameterList | Identifier
+
+Identifier -> Letter IdentifierTail | Letter
+IdentifierTail -> Letter IdentifierTail | Digit IdentifierTail | Letter | Digit
+Constant -> Integer | Float | Bool | Character | String
+Integer -> Sign Number | Number
+Float -> Sign Number . Number | Number . Number
+Bool -> true | false
+Character -> ' Char '
+String -> '' CharCombinations ''
+CharCombinations -> Char | Char CharCombinations
+Char -> Letter | Digit | Symbol
+Number -> Digit | Digit Number
+Digit -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+Letter ->  a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z | A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z | _
+Symbol -> + | - | * | / | : | = | < | > | ( | ) | [ | ] | { | } | , | ; |   | % | ! | & | | | ^ | ~ | @ | # | $ | ` | ? | >
+Sign -> + | -

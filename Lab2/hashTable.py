@@ -30,6 +30,8 @@ class HashTable:
             if pos < len(self.table[hash_value]):
                 return self.table[hash_value][pos]
 
+        return None
+
     def delete(self, hash_value, pos):
         if hash_value not in self.table or pos >= len(self.table[hash_value]):
             return

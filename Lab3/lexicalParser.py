@@ -37,10 +37,6 @@ class LexicalParser:
         while i < len(code):
             char = code[i]
 
-            if self.line_count == 23:
-                if buffer == '" ':
-                    pass
-
             if _looks_like_string(buffer):
                 buffer += char
                 i += 1
@@ -105,7 +101,7 @@ class LexicalParser:
 
         # Check for string constants (single or double quotes)
         elif _is_string(token):
-            return -1, "CONSTANT", token.strip('"').strip("'")  # Strip quotes from the string value
+            return -1, "CONSTANT", token.replace("'", '"')  # Convert single quotes to double quotes for consistency
 
         # Check for valid identifier
         elif self.identifier_pattern.match(token):

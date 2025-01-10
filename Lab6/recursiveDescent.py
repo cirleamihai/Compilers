@@ -34,16 +34,21 @@ class SimpleRecursiveDescentParser:
         else:
             return False
 
+    @property
+    def print_input_string(self):
+        return self.input_string
+
     def _expand(self, non_terminal, parent=None, parent_index=-1):
         rules = self.grammar[non_terminal]  # Get the production rule for the non-terminal
 
         for rule in rules:
-            self._print("Expanding", non_terminal, "with", rule)
+            self._print("Expanding", non_terminal, "with", rule, "Input String: " + self.print_input_string)
             self.history.append(("expand", non_terminal, self.position, rule))
             node_index = self._add_tree_node(non_terminal, parent=parent, parent_index=parent_index)
 
             # Checking the rule
             self._try_rule(rule, non_terminal, non_terminal_index=node_index)
+
             if self.success:
                 return
 
@@ -55,7 +60,7 @@ class SimpleRecursiveDescentParser:
         return self.position < self.input_string.__len__()
 
     def _advance(self, symbol, parent, parent_index):
-        if self.advance_condition and self._compare_values(symbol, parent=parent):
+        if self.advance_condition and self._compare_values(symbol):
             self.position += 1
             self._add_tree_node(symbol=symbol, parent=parent, parent_index=parent_index)
             self._print(f"Advanced to {self.position} with {symbol}")
@@ -63,7 +68,7 @@ class SimpleRecursiveDescentParser:
 
         return False
 
-    def _compare_values(self, symbol, *args, **kwargs):
+    def _compare_values(self, symbol):
         return self.input_string[self.position] == symbol
 
     def _momentary_insuccess(self):
@@ -80,13 +85,13 @@ class SimpleRecursiveDescentParser:
 
     def _try_rule(self, rule, non_terminal, non_terminal_index=-1):
         # Handle epsilon (empty) rules
-        if rule == ["e"]:
+        if rule == ["ε"]:
             self._print(f"Epsilon detected in rule for {non_terminal}.")
             self._success()  # Epsilon means immediate success
             return True
 
         for symbol in rule:
-            if symbol.isupper():
+            if symbol[0].isupper() and non_terminal != "Letter":
                 self._expand(symbol, parent=non_terminal, parent_index=non_terminal_index)
                 if not self.success:
                     return self._momentary_insuccess()
@@ -97,9 +102,14 @@ class SimpleRecursiveDescentParser:
 
         self._success()
 
+    def print_progress(self):
+        self._print(self.input_string[:self.position])
+
     def _success(self):
-        self._print("Patterns match so far!")
-        self.success = True
+        if not self.success:
+            self._print("Patterns match so far!")
+            self.print_progress()
+            self.success = True
 
     def _add_tree_node(self, symbol, parent, parent_index=-1):
         self.parsing_tree.append({
