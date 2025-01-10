@@ -1,15 +1,15 @@
 Program -> StatementList
-StatementList -> Statement ; StatementList
+StatementList -> Statement ; StatementList | Statement
 Statement -> AssignStatement | IOStatement | ControlStatement | LoopStatement | DeclarationStatement
 AssignStatement -> Identifier = Expression
-DeclarationStatement -> Type Identifier | Type AssignStatement
+DeclarationStatement ->  Type AssignStatement | Type Identifier
 Expression -> List | Term | Term + Expression | Term - Expression
 Term -> Factor | Factor * Term | Factor / Term
 Factor -> Identifier | Constant | ( Expression )
 IOStatement -> print ( ArgumentList )
 ArgumentList -> Identifier | String | Identifier , ArgumentList
 ControlStatement -> if ( Condition ) { StatementList } else { StatementList } | if ( Condition ) { StatementList }
-LoopStatement -> for ( Identifier in List ) { StatementList }
+LoopStatement -> for ( Identifier in List ) { StatementList } | for ( Identifier in Identifier ) { StatementList }
 List -> [ ElementList ]
 ElementList -> Constant , ElementList | Constant
 Condition -> Expression Operator Expression

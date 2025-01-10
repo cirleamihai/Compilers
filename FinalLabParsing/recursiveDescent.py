@@ -56,7 +56,11 @@ def main():
         output_activated=True
     )
 
-    print(parser.parse(starting_non_terminal="Program"))
+    match = parser.parse(starting_non_terminal="Program")
+    if match:
+        print("The program is accepted.")
+
+    print(pif)
 
 
 if __name__ == "__main__":
