@@ -1,7 +1,8 @@
 from grammar import load_grammar
 
-class RecursiveDescentParser:
-    def __init__(self, grammar: dict, input_string: str):
+
+class SimpleRecursiveDescentParser:
+    def __init__(self, grammar: dict, input_string: str = "", output_activated=True):
         self.grammar = grammar
         self.input_string = input_string
         self.position = 0
@@ -9,6 +10,15 @@ class RecursiveDescentParser:
         self.history = []  # Stack to keep track of backtracking
         self.parsing_tree = []  # Tree node to keep track of the parse tree
         self.node_index = 1
+        self.output_activated = output_activated
+
+    def _print(self, *args, **kwargs):
+        if self.output_activated:
+            print(*args, **kwargs)
+
+    @property
+    def finished_reading(self):
+        return self.position == self.input_string.__len__()
 
     def parse(self, starting_non_terminal):
         self.success = False
@@ -18,7 +28,7 @@ class RecursiveDescentParser:
         # Start expanding the starting non-terminal
         self._expand(starting_non_terminal)
 
-        if self.success and self.position == self.input_string.__len__():
+        if self.success and self.finished_reading:
             return True
 
         else:
@@ -28,7 +38,7 @@ class RecursiveDescentParser:
         rules = self.grammar[non_terminal]  # Get the production rule for the non-terminal
 
         for rule in rules:
-            print("Expanding", non_terminal, "with", rule)
+            self._print("Expanding", non_terminal, "with", rule)
             self.history.append(("expand", non_terminal, self.position, rule))
             node_index = self._add_tree_node(non_terminal, parent=parent, parent_index=parent_index)
 
@@ -40,17 +50,24 @@ class RecursiveDescentParser:
             # If the rule is not successful, remove the tree node
             self._remove_tree_nodes(node_index)
 
+    @property
+    def advance_condition(self):
+        return self.position < self.input_string.__len__()
+
     def _advance(self, symbol, parent, parent_index):
-        if self.position < self.input_string.__len__() and self.input_string[self.position] == symbol:
+        if self.advance_condition and self._compare_values(symbol, parent=parent):
             self.position += 1
             self._add_tree_node(symbol=symbol, parent=parent, parent_index=parent_index)
-            print(f"Advanced to {self.position} with {symbol}")
+            self._print(f"Advanced to {self.position} with {symbol}")
             return True
 
         return False
 
+    def _compare_values(self, symbol, *args, **kwargs):
+        return self.input_string[self.position] == symbol
+
     def _momentary_insuccess(self):
-        print("Momentary Insuccess...")
+        self._print("Momentary Insuccess...")
         self.success = False
         return self._back()
 
@@ -58,13 +75,13 @@ class RecursiveDescentParser:
         action, non_terminal, position, rule = self.history.pop()
         self.position = position
 
-        print(f"Non terminal {non_terminal} failed to {action} with rule {rule}. Position: {position}")
+        self._print(f"Non terminal {non_terminal} failed to {action} with rule {rule}. Position: {position}")
         return False
 
     def _try_rule(self, rule, non_terminal, non_terminal_index=-1):
         # Handle epsilon (empty) rules
         if rule == ["e"]:
-            print(f"Epsilon detected in rule for {non_terminal}.")
+            self._print(f"Epsilon detected in rule for {non_terminal}.")
             self._success()  # Epsilon means immediate success
             return True
 
@@ -81,7 +98,7 @@ class RecursiveDescentParser:
         self._success()
 
     def _success(self):
-        print("Patterns match so far!")
+        self._print("Patterns match so far!")
         self.success = True
 
     def _add_tree_node(self, symbol, parent, parent_index=-1):
@@ -97,7 +114,8 @@ class RecursiveDescentParser:
         return self.node_index - 1
 
     def _get_sibling(self, parent, parent_index):
-        siblings = [node for node in self.parsing_tree if node["Parent"] == parent and node["Parent Index"] == parent_index]
+        siblings = [node for node in self.parsing_tree if
+                    node["Parent"] == parent and node["Parent Index"] == parent_index]
         return siblings[-1]["Index"] if siblings else -1
 
     def _remove_tree_nodes(self, first_bad_node_index):
@@ -108,8 +126,9 @@ class RecursiveDescentParser:
         import pandas as pd
         df = pd.DataFrame(self.parsing_tree)
         df = df.drop(columns=["Parent Index"])
-        print("\nTree Format:")
-        print(df.to_string(index=False))
+        self._print("\nTree Format:")
+        self._print(df.to_string(index=False))
+
 
 def check_starting_terminals(grammar: dict, input_str: str) -> list:
     starting_non_terminals = []
@@ -122,6 +141,7 @@ def check_starting_terminals(grammar: dict, input_str: str) -> list:
 
     return starting_non_terminals
 
+
 def main():
     grammar = load_grammar('rules.in')
     input_string = "aa"
@@ -131,7 +151,7 @@ def main():
 
     for starting_non_terminal in starting_non_terminals:
         print("\n\nTrying to parse with starting non-terminal", starting_non_terminal)
-        parser = RecursiveDescentParser(grammar, input_string)
+        parser = SimpleRecursiveDescentParser(grammar, input_string)
         if parser.parse(starting_non_terminal):
             print("Input string is accepted!")
             parser.display_parsing_tree()
@@ -140,6 +160,7 @@ def main():
 
     if not matches:
         print("Input string is not accepted!")
+
 
 if __name__ == "__main__":
     main()
